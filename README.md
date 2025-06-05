@@ -101,7 +101,7 @@ docker build -t iuvity-frontend:latest ./frontend
 # Validar si tienes un cluster
 kind get clusters
 # Si no existe, crearlo
-kind create cluster --name iuvity-cluster
+kind create cluster --name iuvity-cluster --config kind-config.yaml
 ```
 
 3.  **Carga las Imágenes al Clúster Kind**:
@@ -120,36 +120,21 @@ kind load docker-image iuvity-frontend:latest --name iuvity-cluster
 
 ```bash
 kubectl apply -f kubernetes/ms-sql-server-deployment.yaml
-```
-
-Espera a que el pod de SQL Server esté listo (puede tardar un minutito):
-
-```bash
-kubectl wait --for=condition=Ready pod -l app=mssql-server --timeout=300s
+kubectl logs -f deployment/mssql-deployment
 ```
 
 - **Backend**:
 
 ```bash
 kubectl apply -f kubernetes/backend-deployment.yaml
-```
-
-Espera a que el pod del backend esté listo:
-
-```bash
-kubectl wait --for=condition=Ready pod -l app=iuvity-backend --timeout=300s
+kubectl logs -f deployment/iuvity-backend
 ```
 
 - **Frontend**:
 
 ```bash
 kubectl apply -f kubernetes/frontend-deployment.yaml
-```
-
-Espera a que el pod del frontend esté listo:
-
-```bash
-kubectl wait --for=condition=Ready pod -l app=iuvity-frontend --timeout=300s
+kubectl logs -f deployment/iuvity-frontend
 ```
 
 5.  **Accede a la Aplicación**:
